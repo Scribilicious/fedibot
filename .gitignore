@@ -1,0 +1,8 @@
+**/.DS_Store
+**/__pycache__/
+data/*
+!data/___data_files___
+
+# do only commit the example.ini
+config/*
+!config/example.ini
