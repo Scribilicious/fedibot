@@ -19,16 +19,17 @@ Parser.add_argument('-n', '--new', type=str, help='Create a new config file. If 
 
 Args = Parser.parse_args()
 
-print('         __')
-print(' _(\\    |@@|')
-print('(__/\\__ \\--/ __')
-print('   \\___|----|  |   __')
-print('       \\ FB /\\ )_ / _\\')
-print('       /\\__/\\ \\__O (__')
-print('      (--/\\--)    \\__/')
-print('      _)(  )(_')
-print('     `---\'\'---`')
-print()
+print('    ───────────────')
+print(' ┌──────┐ ┌────┐ ────')
+print(' │┌┐┌┐┌┐│ │◕  ◕│ ──────')
+print(' │└┘└┘└┘│ └─┬┬─┘ ┌────┐')
+print(' │┌┐┌┐┌┐│ ┌┬┴┴┬┐ │┌┐┌┐│')
+print(' │└┘└┘└┘│ ││FB││ │└┘└┘│')
+print(' │┌┐  ┌┐│ ││──││ │┌┐┌┐│')
+print(' │└┘┌┐└┘│ ■└┬┬┘■ │└┘└┘│')
+print('─┴──┴┴──┴── ││ ──┴────┴───')
+print('  ───────── ││ ─────────')
+print('    ────── ▀▀▀▀ ──────')
 
 if (Args.config):
     Config = configparser.ConfigParser()

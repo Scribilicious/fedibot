@@ -8,6 +8,12 @@ class Post:
     # Initialize Post
     #
     def __init__(self, url, key):
+        self.init()
+
+    #
+    # Sets the API call
+    #
+    def init(self):
         self.url = url
         self.key = key
         self.json = {
