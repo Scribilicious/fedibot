@@ -7,15 +7,15 @@ class Post:
     #
     # Initialize Post
     #
-    def __init__(self, url, key):
-        self.init()
+    def __init__(self, url: str, key: str):
+        self.init(url, key)
 
     #
     # Sets the API call
     #
-    def init(self):
-        self.url = url
-        self.key = key
+    def init(self, url: str = None, key: str = None):
+        self.url = self.url if url is None else url
+        self.key = self.key if key is None else key
         self.json = {
             'status' : '',
             'visibility' : 'public',

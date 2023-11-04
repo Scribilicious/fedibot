@@ -20,7 +20,10 @@ class Crawler:
 
         return None
 
-    def find_images(self):
+    def getResponse(self):
+        return self.response
+
+    def findImages(self):
         return self.find('<img .*?src="(.*?)"')
 
     def find(self, regex, all = True):

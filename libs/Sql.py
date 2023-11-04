@@ -1,6 +1,7 @@
 import sys
 import os
 import sqlite3
+import re
 
 class Sql():
     #
@@ -14,6 +15,12 @@ class Sql():
             )
         except:
             print("Can't connect to database...")
+
+    #
+    # Generate a Key
+    #
+    def generateKey(self, string, replace = '_'):
+        return re.sub(r'[^a-zA-Z0-9]+', replace, string.lower())
 
     #
     # Rollback
@@ -53,7 +60,6 @@ class Sql():
     def execute(self, query, values = [], fetch = False, commit = True):
         try:
             c = self._Sql.cursor()
-
             c.execute(query, values)
 
             if (fetch):

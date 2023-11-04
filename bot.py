@@ -106,3 +106,7 @@ if (plugin and url and key):
 
 else:
     Parser.print_help()
+    print()
+    print('Example:')
+    print('    python3 bot.py -p gotorelease -c default')
+    print('    python3 bot.py -f')

@@ -24,7 +24,8 @@ def run(self):
         ' and it\'s called:\n\n' +
         version['name'] +
         '\n\n' +
-        version['url'])
+        version['url'] +
+        '\n\n#GoToSocial #Release')
     print(self.Post.send())
 
 
