@@ -27,7 +27,11 @@ class Crawler:
         return self.find('<img .*?src="(.*?)"')
 
     def find(self, regex, all = True):
-        if (all):
-            return re.findall(regex, self.response)
-        else:
-            return re.search(regex, self.response).group(1)
+        try:
+            if (all):
+                return re.findall(regex, self.response)
+            else:
+                return re.search(regex, self.response).group(1)
+        except Exception as e:
+            print(f"Error running regex '{regex}': {str(e)}")
+            return None
