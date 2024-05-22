@@ -1,9 +1,10 @@
 import sys
 import importlib
+import traceback
 from libs.Post import Post
 
 class Plugin:
-    def __init__(self, plugin, url, key, Config = None):
+    def __init__(self, plugin, url, key, Config = None, debug = False):
         self.Post = Post(url, key)
         self.Config = Config
 
@@ -12,7 +13,7 @@ class Plugin:
 
         except Exception as e:
             print('Plugin:', plugin, 'does not exists.')
-            print(e)
+            traceback.print_exc()
             sys.exit()
 
         try:
@@ -20,13 +21,18 @@ class Plugin:
 
         except Exception as e:
             print('Can not initialize plugin', plugin)
-            print(e)
+            traceback.print_exc()
             sys.exit()
 
-        try:
+        # runs the plugin
+        if debug:
             self.Plugin.run(self)
+        else:
+            try:
+                self.Plugin.run(self)
 
-        except Exception as e:
-            print('Can not run plugin', plugin)
-            print(e)
-            sys.exit()
+            except Exception as e:
+                print('Can not run plugin', plugin)
+
+                traceback.print_exc()
+                sys.exit()

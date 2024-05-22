@@ -5,7 +5,9 @@ from libs.Sql import Sql
 from typing import Union
 
 crawler_urls = [
-    {'name': 'Auto-Tune', 'url': 'https://www.reasonstudios.com/shop/rack-extension/auto-tune-reason/', 'regex': '($|€)([0-9.,]+)', 'group': 1, 'subgroup': 0},
+    {'name': 'Synplant', 'url': 'https://soniccharge.com/synplant', 'regex': '"price": "(.*?)"'},
+    {'name': 'Auto-Tune', 'url': 'https://www.reasonstudios.com/shop/rack-extension/auto-tune-reason/', 'regex': '(\$|€)([0-9.,]+)', 'group': 1, 'subgroup': 0},
+    {'name': 'Industrializer', 'url': 'https://www.reasonstudios.com/shop/rack-extension/industrializer/', 'regex': '(\$|€)([0-9.,]+)', 'group': 1, 'subgroup': 0},
     {'name': 'Flipper Zero', 'url': 'https://shop.flipperzero.one/', 'regex': '"price" :(.*?),'},
     {'name': 'Starfield', 'url': 'https://store.steampowered.com/app/1716740/Starfield/', 'regex': 'data-price-final="([0-9.,]+)"', 'force_decimal': True},
 ]
@@ -17,19 +19,18 @@ def run(self):
     for crawl in crawler_urls:
         try:
             group = crawl['group']
-        except KeyError:
+        except:
             group = 0
 
         try:
             subgroup = crawl['subgroup']
-        except KeyError:
+        except:
             subgroup = None
 
         try:
             force_decimal = crawl['force_decimal']
-        except KeyError:
+        except:
             force_decimal = False
-
 
         self.Plugin.getPrice(self, crawl['name'], crawl['url'], crawl['regex'], group, subgroup, force_decimal)
 
@@ -42,7 +43,7 @@ def getPrice(self, name: str, url: str, regex: str, group: int = 0, subgroup: Un
     if subgroup is not None:
         try:
             price = price[subgroup]
-        except KeyError:
+        except:
             print('No price found for "{}".'.format(name))
             return None
 
@@ -50,18 +51,22 @@ def getPrice(self, name: str, url: str, regex: str, group: int = 0, subgroup: Un
         try:
             price = price[group]
             price = float(price.replace(',', '.'))
-        except KeyError:
+        except:
             print(self.Crawler.getResponse())
             print('No price found for "{}".'.format(name))
             return None
     else:
-        print('Invalid group value', group,'. Group must be an integer.')
+        print('Group value for "{}" is not an integer.'.format(name))
         return None
 
     if force_decimal:
         price = price / 100
 
-    formatted_price = '{:.2f}'.format(price)
+    try:
+        formatted_price = '{:.2f}'.format(price)
+    except:
+        print('Can not format "{}".'.format(name))
+        return None
 
     _Sql = Sql('pricewatch')
     key = _Sql.generateKey(name, '')

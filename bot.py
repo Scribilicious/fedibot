@@ -9,6 +9,7 @@ Parser = argparse.ArgumentParser()
 plugin = None
 url = None
 key = None
+debug = False
 
 Parser.add_argument('-p', '--plugin', type=str, help='The plugin to run.')
 Parser.add_argument('-u', '--url', type=str, help='The URL of the Fediverse instance.')
@@ -16,6 +17,7 @@ Parser.add_argument('-k', '--key', type=str, help='The key used for the Fedivers
 Parser.add_argument('-c', '--config', type=str, help='Use a config file.')
 Parser.add_argument('-f', '--free', action='store_true', help='Free temp files.')
 Parser.add_argument('-n', '--new', type=str, help='Create a new config file. If the -c parameter is set then use that file as a copy.')
+Parser.add_argument('-d', '--debug', action='store_true', help='Throws the tracebag errors from a plugin.')
 
 Args = Parser.parse_args()
 
@@ -86,6 +88,9 @@ if (Args.url):
 if (Args.key):
     key = Args.key
 
+if (Args.debug):
+    debug = True
+
 if (Args.free):
     folder_path = os.path.dirname(__file__) + '/data/temp/'
     files = os.listdir(folder_path)
@@ -102,7 +107,7 @@ if (plugin and url and key):
     print('URL:', url)
     print('Key:', key)
     print()
-    Plugin(plugin, url, key, Config)
+    Plugin(plugin, url, key, Config, debug)
 
 else:
     Parser.print_help()

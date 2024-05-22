@@ -2,6 +2,7 @@ import requests
 import mimetypes
 import pathlib
 import os
+import re
 
 class Post:
     #
@@ -25,6 +26,27 @@ class Post:
         self.call = 'statuses'
         self.files = None
         self.data = None
+        self.type = 'post'
+
+    #
+    # Get x number of posted posts
+    #
+    def statuses(self, limit=1):
+        account = self.send('accounts/verify_credentials', '', '', '', 'get')
+        if account.status_code != 200:
+            return None
+
+        response = self.send('accounts/' + account.json()['id'] + '/statuses', {'limit': limit}, '', '', 'get')
+        if response.status_code == 200:
+            return response.json()
+
+        return None
+
+    #
+    # Delete a post
+    #
+    def delete(self, id):
+        return self.send('statuses/' + id, '', '', '', 'delete')
 
     #
     # Sets the API call
@@ -52,6 +74,12 @@ class Post:
         self.data = data
 
     #
+    # Sets the Type
+    #
+    def type(self, type):
+        self.type = type
+
+    #
     # Adds an attachment
     #
     def media(self, file_path: str, description = None, type = None):
@@ -70,7 +98,7 @@ class Post:
             return None
 
         if (not os.path.exists(file_path)):
-            print('File', filepath, 'does not exists...')
+            print('File', file_path, 'does not exists...')
             return None
 
         response = self.send('media', '', {'description': description}, {'file': open(file_path, 'rb')})
@@ -85,7 +113,7 @@ class Post:
     #
     # Make a post request
     #
-    def send(self, call = None, json = None, data = None, files = None):
+    def send(self, call = None, json = None, data = None, files = None, type = None):
         if (call == None):
             call = self.call 
 
@@ -98,31 +126,57 @@ class Post:
         if (files == None):
             files = self.files  
 
+        if (type == None):
+            type = self.type
+
         try:
-            response = requests.post(
-                url = self.url + '/api/v1/' + call,
-                headers = {
-                    'Authorization': 'Bearer ' + self.key
-                },
-                json = json,
-                data = data,
-                files = files
-            )
+            if (type == 'post'):
+                response = requests.post(
+                    url = self.url + '/api/v1/' + call,
+                    headers = {
+                        'Authorization': 'Bearer ' + self.key
+                    },
+                    json = json,
+                    data = data,
+                    files = files
+                )
+            elif (type == 'delete'):
+                response = requests.delete(
+                    url = self.url + '/api/v1/' + call,
+                    headers = {
+                        'Authorization': 'Bearer ' + self.key
+                    }
+                )
+            else:
+                response = requests.get(
+                    url = self.url + '/api/v1/' + call,
+                    headers = {
+                        'Authorization': 'Bearer ' + self.key
+                    },
+                    params = json
+                )
 
             return response
 
         except:
             return None
 
+
+
     #
     # Downloads an url to a temp dir
     #
-    def download(self, url: str, dest_folder: str):
+    def download(self, url: str, dest_folder: str, filename: str = None):
         if not os.path.exists(dest_folder):
             os.makedirs(dest_folder)  # create folder if it does not exist
 
-        filename = url.split('/')[-1].replace(" ", "_")  # be careful with file names
-        filename = filename.split('?')[0]
+        if not filename:
+            match = re.search(r'/([^/?]+)(?:\?|$)', url)
+            if match:
+                filename = match.group(1)
+            else:
+                return None
+
         file_path = os.path.join(dest_folder, filename)
 
         r = requests.get(url, stream=True)
